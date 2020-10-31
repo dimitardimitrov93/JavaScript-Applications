@@ -1,0 +1,15 @@
+{
+  "name": "03.char-lookup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "charLookUp.js",
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha charLookUp.test.js"
+  },
+  "author": "Dimitar Dimitrov",
+  "license": "MIT",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.2.0"
+  }
+}
