@@ -1,0 +1,11 @@
+{
+  "name": "lab",
+  "version": "1.0.0",
+  "description": "Lab Exercises",
+  "main": "04.Check-for-symmetry.js",
+  "scripts": {
+    "test": "mocha ./04.Check-for-symmetry.test.js"
+  },
+  "author": "Dimitar Dimitrov",
+  "license": "MIT"
+}
