@@ -1,0 +1,15 @@
+{
+  "name": "02.payment-package",
+  "version": "1.0.0",
+  "description": "",
+  "main": "PaymentPackage.js",
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha PaymentPackage.test.js"
+  },
+  "author": "Dimitar Dimitrov",
+  "license": "MIT",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.2.0"
+  }
+}
