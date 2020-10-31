@@ -1,0 +1,15 @@
+{
+  "name": "02.even-or-odd",
+  "version": "1.0.0",
+  "description": "Solution of task 1 - Even or Odd.",
+  "main": "solution.js",
+  "scripts": {
+    "test": "node node_modules/mocha/bin/mocha solution.test.js"
+  },
+  "author": "Dimitar Dimitrov",
+  "license": "MIT",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.2.0"
+  }
+}
