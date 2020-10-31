@@ -1,0 +1,15 @@
+{
+  "name": "04.math-enforcer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mathEnforcer.js",
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha mathEnforcer.test.js"
+  },
+  "author": "Dimitar Dimitrov",
+  "license": "MIT",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.2.0"
+  }
+}
