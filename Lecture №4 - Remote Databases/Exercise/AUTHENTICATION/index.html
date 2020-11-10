@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-auth.js"></script>
+    <script src="https://kit.fontawesome.com/138bf39034.js" crossorigin="anonymous"></script>
+    <title>Exam Task #1</title>
+</head>
+
+<body>
+    <section class="login-form">
+        <h1>Account Login</h1>
+        <form>
+            <i class="fas fa-envelope"></i>
+            <input type="text" name="email" placeholder="Email" required>
+
+            <i class="fas fa-lock"></i>
+            <input type="password" name="password" placeholder="Password" required>
+
+            <input class="login-btn" type="button" value="LOGIN">
+
+            <span class="register">Don't have an account? <a class="register-link" href="#">Register</a></span>
+        </form>
+    </section>
+    <section class="register-form">
+        <form>
+            <input type="text" name="firstName" placeholder="First Name..." required>
+            <input type="text" name="lastName" placeholder="Last Name..." required>
+            <input type="email" name="email" placeholder="Email..." required>
+            <input type="password" name="password" placeholder="Password..." required>
+            <input type="button" class="register-btn" value="Register">
+            <span class="successful-reg-msg">You were registered successfully. Now you can <a class="log-in-anchor" href="#">log in</span>
+            <span class="unsuccessful-reg-msg"></span>
+        </form>
+    </section>
+
+    <section class="logged-in">
+        <h1 class="welcome-msg"></h1>
+        <input type="button" class="logout-btn" value="Log out">
+    </section>
+
+    <script src="firebaseConfig.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
