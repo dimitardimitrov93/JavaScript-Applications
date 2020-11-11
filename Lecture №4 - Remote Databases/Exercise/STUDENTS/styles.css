@@ -1,0 +1,97 @@
+body{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 20px;
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.table-wrapper {
+    width: 67%;
+    margin-top: 0.6em;
+}
+
+table {
+    border:1px solid #234465;
+    padding: 1%;
+    width: 100%;
+    border-radius: 4px;
+    margin: 0.6em 0.5em 0.5em 1em;
+}
+
+table th{
+    text-decoration: underline;
+    text-align: left;
+}
+
+table tbody td{
+    text-align: left;
+    border-bottom:1px solid black;
+    padding: 0.5%;
+}
+
+table tbody tr:nth-child(even){
+    background-color: #234465;
+    color: white
+}
+
+table tbody tr:nth-child(odd){
+    color: #234465;
+    border-bottom: 1px solid black;
+}
+
+table tbody tr:nth-child(odd) button{
+    background: #234465;
+    color:white;
+}
+
+table tbody tr:nth-child(even) button{
+    background: white;
+    color:#234465;
+}
+
+table tr:hover{
+    text-decoration: underline;
+}
+
+form {
+    display: flex;
+    flex-flow: column;
+    width: 30%;
+    margin-left: 0.5em;
+}
+
+form fieldset,
+form button,
+form input {
+    border-radius: 0.3em;
+    border: 1px solid black;
+}
+
+form legend {
+    margin-bottom: 1.1em;
+}
+
+form input {
+    display: inline-block;
+    width: 55%;
+    margin-bottom: 1.5em;
+    padding: 0.4em;
+}
+
+form label {
+    display: inline-block;
+    width: 40%;
+}
+
+.register-btn {
+    width: 100%;
+    padding: 1em;
+    cursor: pointer;
+}
+
+.list-students-btn {
+    width: 100%;
+    margin: 0 0 0 1.5em;
+    padding: 0.5em;
+    cursor: pointer;
+}

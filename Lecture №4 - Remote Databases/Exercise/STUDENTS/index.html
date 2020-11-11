@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Students</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <form>
+        <fieldset>
+            <legend>
+                Register New Student
+            </legend>
+
+            <label for="id">ID</label>
+            <input type="number" name="id" required>
+
+            <label for="firstName">First Name</label>
+            <input type="text" name="firstName" required>
+
+            <label for="lastName">Last Name</label>
+            <input type="text" name="lastName" required>
+
+            <label for="faculty-number">Faculty Number</label>
+            <input type="number" name="faculty-number" required>
+
+            <label for="grade">Grade</label>
+            <input type="number" name="grade" required>
+
+            <button class="register-btn">Register</button>
+        </fieldset>
+    </form>
+
+    <div class="table-wrapper">
+        <button class="list-students-btn">List Students</button>
+        <table id="results">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Faculty Number</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <script src="./app.js"></script>
+</body>
+
+</html>
