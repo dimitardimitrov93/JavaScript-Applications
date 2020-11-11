@@ -6,20 +6,23 @@ function attachEvents() {
     const passwordInputElement = document.querySelector('.login-form form input:nth-child(4)');
 
     const loginSectionElement = document.querySelector('.login-form');
-    const registerSectionElement = document.querySelector('.register-form');
-    const loggedInSectionElement = document.querySelector('.logged-in');
     const loginButtonElement = document.querySelector('.login-btn');
-    const successfulRegSpanElement = document.querySelector('.successful-reg-msg');
-    const welcomeMsgH1Element = document.querySelector('.welcome-msg');
-    const logoutButtonElement = document.querySelector('.logout-btn');
-    const loginInputElements = Array.from(document.querySelectorAll('.login-form form input'));
-    const loginAnchorElement = document.querySelector('.log-in-anchor');
-    loginInputElements.pop();
-    
+
+    const registerSectionElement = document.querySelector('.register-form');
+    const registerButtonElement = document.querySelector('.register-form input.register-btn');
     const registrationFormLinkElement = document.querySelector('.register-link');
     const registerInputElementsArr = Array.from(document.querySelectorAll('.register-form form input'));
     registerInputElementsArr.pop();
-    const registerButtonElement = document.querySelector('.register-form input.register-btn');
+    const successfulRegSpanElement = document.querySelector('.successful-reg-msg');
+    const unsuccessfulRegSpanElement = document.querySelector('.unsuccessful-reg-msg');
+
+    const loggedInSectionElement = document.querySelector('.logged-in');
+    const welcomeMsgH1Element = document.querySelector('.welcome-msg');
+    const logoutButtonElement = document.querySelector('.logout-btn');
+
+    const loginInputElements = Array.from(document.querySelectorAll('.login-form form input'));
+    const loginAnchorElement = document.querySelector('.log-in-anchor');
+    loginInputElements.pop();
 
     let [firstName, lastName, email, password] = '';
 
@@ -42,19 +45,34 @@ function attachEvents() {
         passwordInputElement.value = password;
     }
 
+    function displayWelcomePage() {
+        bodyElement.style.backgroundImage = 'linear-gradient(to bottom, rgba(000, 0, 0, 0.5) 0%, rgba(000, 0, 0, 0.5) 100%), url(https://images.unsplash.com/photo-1604699229817-27301bdfed68?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1502&q=80)';
+        loginSectionElement.style.display = 'none';
+        loggedInSectionElement.style.display = 'block';
+
+        if (firstName && lastName) {
+            welcomeMsgH1Element.innerText = `Welcome, ${firstName} ${lastName}.`;
+            firstName = null;
+            lastName = null;
+        } else {
+            welcomeMsgH1Element.innerText = `Welcome, ${email}.`;
+        }
+    }
+
     function registerNewUser() {
         if (!areInputsValid(registerInputElementsArr)) return;
 
         [firstName, lastName, email, password] = registerInputElementsArr.map(input => input.value);
-        clearInputValues(registerInputElementsArr);
 
         auth.createUserWithEmailAndPassword(email, password)
             .then(res => {
+                clearInputValues(registerInputElementsArr);
+                unsuccessfulRegSpanElement.style.display = 'none';
                 successfulRegSpanElement.style.display = 'block';
-                // register user with displayName
             })
             .catch(err => {
-                console.log(`Error ${err.message}`);
+                unsuccessfulRegSpanElement.innerText = `${err.message}.`;
+                unsuccessfulRegSpanElement.style.display = 'block';
             });
     }
 
@@ -62,7 +80,7 @@ function attachEvents() {
         auth.signInWithEmailAndPassword(email = emailInputElement.value, password = passwordInputElement.value)
             .then(res => {
                 clearInputValues(loginInputElements);
-                displayWelcomePage(firstName, lastName);
+                displayWelcomePage();
             })
             .catch(err => {
                 console.log(`Error: ${err.message}`);
@@ -83,13 +101,6 @@ function attachEvents() {
 
     function areInputsValid(inputsArr) {
         return inputsArr.every(input => (input.value && input.value.trim() !== ''));
-    }
-
-    function displayWelcomePage(firstName, lastName) {
-        bodyElement.style.backgroundImage = 'linear-gradient(to bottom, rgba(000, 0, 0, 0.5) 0%, rgba(000, 0, 0, 0.5) 100%), url(https://images.unsplash.com/photo-1530103862676-de8c9debad1d)';
-        loginSectionElement.style.display = 'none';
-        welcomeMsgH1Element.innerText = `Welcome, ${firstName} ${lastName}.`;
-        loggedInSectionElement.style.display = 'block';
     }
 
     function clearInputValues(inputArr) {
