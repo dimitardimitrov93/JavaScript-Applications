@@ -153,6 +153,7 @@ function attachEvents() {
         submitButtonElement.style.display = 'none';
         editButtonElement.style.display = 'block';
         editButtonElement.dataset.key = book.key;
+        editButtonElement.scrollIntoView(true);
     }
 
     function createNewTableRowWithBook(book) {
