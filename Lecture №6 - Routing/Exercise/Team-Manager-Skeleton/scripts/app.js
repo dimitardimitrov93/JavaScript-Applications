@@ -9,7 +9,7 @@ const router = Sammy('#main', function () {
     this.get('/home', function (context) {
         loadPartials(context)
             .then(function () {
-                this.partial('./templates/home/home.hbs');
+                this.partial('../templates/home/home.hbs');
             });
     });
 
@@ -21,6 +21,20 @@ const router = Sammy('#main', function () {
             .then(function () {
                 this.partial('./templates/login/loginPage.hbs', { email, password });
             });
+    });
+
+    this.get('/logout', function (context) {
+        auth.signOut()
+            .then(() => {
+                loadPartials(context)
+                    .then(function () {
+                        sessionStorage.removeItem('email');
+                        sessionStorage.removeItem('password');
+                        this.partial('./templates/home/home.hbs');
+                        displayNotification('Successfully logged out.');
+                    });
+            })
+            .catch(error => displayError(error.message));
     });
 
     this.get('/about', function (context) {
@@ -38,11 +52,65 @@ const router = Sammy('#main', function () {
     });
 
     this.get('/catalog', function (context) {
-        loadPartials(context)
-            .then(function () {
-                this.partial('./templates/catalog/registerPage.hbs');
+        fetchTeams()
+            .then(res => {
+                let teams = [];
+                const hasNoTeam = sessionStorage.getItem('hasNoTeam') === 'true' ? true : false;
+                const loggedIn = sessionStorage.getItem('loggedIn');
+                const email = sessionStorage.getItem('email');
+                Object.entries(res).forEach(team => {
+                    teams.push({
+                        '_id': team[0],
+                        name: team[1].name,
+                        comment: team[1].comment,
+                    });
+                });
+
+                loadPartials(context)
+                    .then(function () {
+                        this.partial('./templates/catalog/teamCatalog.hbs', {email, loggedIn, hasNoTeam: hasNoTeam, teams });
+                    });
             });
     });
+
+    this.get('/catalog/:id', function (context) {
+        const id = context.params.id;
+
+        loadTeam(id)
+            .then(team => {
+                loadPartials(context)
+                    .then(function () {
+                        this.partial('./templates/catalog/details.hbs', team);
+                    });
+            })
+    });
+
+    this.get('/create', function (context) {
+        loadPartials(context)
+            .then(function () {
+                this.partial('./templates/create/createPage.hbs');
+            });
+    })
+
+    this.post('/create', function (context) {
+        const creator = sessionStorage.getItem('email');
+        const userId = sessionStorage.getItem('userId');
+        const teamName = context.params.name;
+        const comment = context.params.comment;
+
+        createTeam(creator, teamName, comment)
+            .then(() => {
+                changeTeamBelonging(userId)
+                    .then(() => {
+                        this.redirect('/catalog');
+                    })
+            })
+
+        loadPartials(context)
+            .then(function () {
+                this.partial('./templates/create/createPage.hbs');
+            });
+    })
 
     this.get('/', function (context) {
         loadPartials(context)
@@ -64,8 +132,11 @@ const router = Sammy('#main', function () {
 
         auth.createUserWithEmailAndPassword(email, password)
             .then(res => {
-                displayNotification('You were registered successfully.');
-                this.redirect('/login')
+                addUserToDb(email)
+                    .then(res => {
+                        displayNotification('You were registered successfully.');
+                        this.redirect('/login')
+                    });
             })
             .catch(error => {
                 displayError(error.message);
@@ -73,16 +144,26 @@ const router = Sammy('#main', function () {
     });
 
     this.post('/login', function (context) {
-        const email = context.params.email;
-        const password = context.params.password;
+        const { email, password } = context.params;
+        sessionStorage.setItem('email', email);
+        sessionStorage.setItem('password', password);
+        sessionStorage.setItem('loggedIn', true);
 
         auth.signInWithEmailAndPassword(email, password)
             .then(function () {
                 loadPartials(context)
                     .then(function () {
-                        this.partial('./templates/home/home.hbs', {loggedIn: true, email: context.params.email});
+                        this.partial('./templates/home/home.hbs', { loggedIn: true, email: context.params.email });
+                        displayNotification('Successfully logged in.')
                     });
             })
+            .catch(error => displayError(error.message));
+
+        getUserInfo(email)
+            .then(userInfo => {
+                sessionStorage.setItem('userId', userInfo.id);
+                sessionStorage.setItem('hasNoTeam', userInfo.hasNoTeam);
+            });
     });
 
 });
@@ -98,7 +179,11 @@ function loadPartials(context) {
         'loginForm': './templates/login/loginForm.hbs',
         'loginPage': './templates/register/registerPage.hbs',
         'registerForm': './templates/register/registerForm.hbs',
-        //'catalog': './templates/catalog/catalog.hbs',
+        'catalog': './templates/catalog/teamCatalog.hbs',
+        'team': './templates/catalog/team.hbs',
+        'details': './templates/catalog/details.hbs',
+        'teamControls': './templates/catalog/teamControls.hbs',
+        'createForm': './templates/create/createForm.hbs',
     });
 }
 
@@ -113,11 +198,84 @@ function displayNotification(infoMsg) {
 }
 
 function displayError(errorMessage) {
-    errDivElem.innerHTML = `${errorMessage}.`;
+    errDivElem.innerHTML = errorMessage;
     errDivElem.style.display = 'block';
 
     setTimeout(() => {
         errDivElem.style.display = 'none';
         errDivElem.innerHTML = '';
     }, 3000);
+}
+
+async function fetchTeams() {
+    const req = await fetch('https://team-manager-js-app.firebaseio.com/teams.json');
+    const res = await req.json();
+    return await res;
+}
+
+async function loadTeam(id) {
+    const req = await fetch(`https://team-manager-js-app.firebaseio.com/teams/${id}.json`);
+    const res = await req.json();
+    return await res;
+}
+
+async function getUserInfo(email) {
+    const req = await fetch('https://team-manager-js-app.firebaseio.com/users.json');
+    const res = await req;
+    const users = await res.json();
+    let userInfo;
+
+    Object.entries(await users).forEach(user => {
+        if (user[1].email === email) {
+            userInfo = {
+                id: user[0],
+                email: user[1].email,
+                hasNoTeam: user[1].hasNoTeam
+            };
+        }
+    });
+
+    return await userInfo;
+}
+
+async function addUserToDb(email) {
+    const req = await fetch('https://team-manager-js-app.firebaseio.com/users.json', {
+        method: 'POST',
+        body: JSON.stringify({
+            email,
+            hasNoTeam: true,
+        })
+    });
+
+    const res = await req;
+    return await res;
+}
+
+async function changeTeamBelonging(userId) {
+    const req = fetch(`https://team-manager-js-app.firebaseio.com/users/${userId}.json`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+            hasNoTeam: false,
+        }),
+    });
+
+    const res = await req;
+
+    return await res.json();
+}
+
+async function createTeam(creator, teamName, comment) {
+    const req = fetch('https://team-manager-js-app.firebaseio.com/teams.json', {
+        method: 'POST',
+        body: JSON.stringify({
+            creator, 
+            name: teamName, 
+            comment,
+            members: [],
+        }),
+    });
+
+    const res = await req;
+
+    return await res.json();
 }
