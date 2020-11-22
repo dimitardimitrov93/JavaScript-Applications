@@ -1,4 +1,18 @@
 const apiKey = 'AIzaSyARQOZyCb3EcyM6F4dHDq4cwvsON1xXD7s';
+const databaseUrl = 'https://movies-spa-js.firebaseio.com';
+
+const request =  async (url, method, body) => {
+    let options = {method};
+
+    if (method === 'POST') {
+        options.body = body;
+    }
+
+    const res = await fetch(url, options);
+
+    const data = await res.json();
+    return data;
+}
 
 const authService = {
 
@@ -53,5 +67,24 @@ const authService = {
 
     logOut() {
         localStorage.removeItem('auth');
-    }
+        displaySuccessNotification('Logged out successfully');
+    },
 };
+
+const movieService = {
+
+    async add(movieData) {
+        const res = await request(`${databaseUrl}/movies.json`, 'POST', JSON.stringify(movieData));
+        return res;
+    },
+
+    async getAll() {
+        const res = await request(`${databaseUrl}/movies.json`, 'GET');
+        return Object.keys(res).map(movieId => ({movieId, ...res[movieId]}));
+    },
+
+    async getMovie(movieId) {
+        const res = await request(`${databaseUrl}/movies/${movieId}.json`, 'GET');
+        return res;
+    }
+}
