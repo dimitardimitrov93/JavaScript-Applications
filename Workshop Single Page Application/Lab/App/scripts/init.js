@@ -1,8 +1,13 @@
 function attachEvents() {
     const navigationTemplate = Handlebars.compile(document.getElementById('navigation-template').innerHTML);
     const movieCardTemplate = Handlebars.compile(document.getElementById('movie-card-template').innerHTML);
+    const editMovieTemplate = Handlebars.compile(document.getElementById('edit-movie-template').innerHTML);
+
+    
     Handlebars.registerPartial('navigation-template', navigationTemplate);
     Handlebars.registerPartial('movie-card-template', movieCardTemplate);
+    Handlebars.registerPartial('edit-movie-template', editMovieTemplate);
+
     navigate('/home');
 }
 
@@ -60,11 +65,6 @@ function onLoginSubmit(e) {
         .catch(error => displayErrorNotification(error.message));
 }
 
-function navigate(path) {
-    history.pushState({}, '', path);
-    router(path);
-}
-
 function onAddMovieSubmit(e) {
     e.preventDefault();
     const formData = new FormData(document.forms['addMovie-form']);
@@ -87,6 +87,31 @@ function onAddMovieSubmit(e) {
     })
         .then(res => {
             displaySuccessNotification('Movie added successfully');
+            navigate('/home');
+        })
+        .catch(error => displayErrorNotification(error.message));
+}
+
+function onEditMovieSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(document.forms['editMovieForm']);
+
+    const movieData = {
+        title: formData.get('title'),
+        imageUrl: formData.get('imageUrl'),
+        description: formData.get('description'),
+    }
+
+    const movieId = location.href.replace(new RegExp(/.*\//), '');
+
+    if (!movieData.title.trim() || !movieData.description.trim() || !movieData.imageUrl.trim()) {
+        displayErrorNotification('Invalid inputs!');
+        return;
+    }
+
+    movieService.editMovie(movieId, movieData)
+        .then(res => {
+            displaySuccessNotification('Movie edited successfully');
             navigate('/home');
         })
         .catch(error => displayErrorNotification(error.message));
@@ -116,9 +141,7 @@ function displayErrorNotification(message) {
     }, 2500);
 }
 
-{/* <section class="notifications" style="display: none;">
-<p class="notification-message" id="errorBox">Message...</p>
-</section>
-<section class="notifications" style="display: none;background-color:rgba(1, 131, 29, 0.541);">
-<p class="notification-message" id="successBox">Message...</p>
-</section> */}
+function navigate(path) {
+    history.pushState({}, '', path);
+    router(path);
+}

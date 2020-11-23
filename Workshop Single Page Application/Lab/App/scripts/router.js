@@ -6,13 +6,17 @@ const router = async (fullPath) => {
         '/movies': 'movies-template',
         '/addMovie': 'addMovie-form-template',
         '/details': 'movie-details-template',
+        '/edit': 'edit-movie-template',
     };
 
     let path = fullPath;
     let movieId = '';
-    if (fullPath.includes('details')) {
+
+    const possiblePathsWithMovieId = /^\/edit|^\/delete|\/details/;
+
+    if (possiblePathsWithMovieId.test(fullPath)) {
         path = fullPath.slice(0, fullPath.lastIndexOf('/'));
-        movieId = fullPath.slice(fullPath.lastIndexOf('/'));
+        movieId = fullPath.slice((fullPath.lastIndexOf('/') + 1));
     }
 
     let authData = authService.getData();
@@ -31,13 +35,24 @@ const router = async (fullPath) => {
             templateData.movieData = await movieService.getMovie(movieId);
             const currentUser = JSON.parse(localStorage.getItem('auth')).email;
             const movieCreator = templateData.movieData.creator;
+            templateData.movieData.movieId = movieId;
             templateData.movieData.isCurrentUserCreator = currentUser === movieCreator;
+            break;
+        case '/delete':
+            if (!window.confirm('Are you sure you want to delete this movie?')) return;
+            await movieService.deleteMovie(movieId)
+                .then(res => {
+                    displaySuccessNotification('Movie deleted successfully.');
+                    navigate(`/home`);
+                })
+                .catch(error => displayErrorNotification(error.message));
+            return;
+        case '/edit':
+            templateData.movieData = await movieService.getMovie(movieId);
             break;
         default:
             break;
     }
-
-    
 
     // for (const key in templateData.movies) {
     //     const movieId = key;

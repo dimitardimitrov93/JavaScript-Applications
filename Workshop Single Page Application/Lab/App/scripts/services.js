@@ -2,15 +2,12 @@ const apiKey = 'AIzaSyARQOZyCb3EcyM6F4dHDq4cwvsON1xXD7s';
 const databaseUrl = 'https://movies-spa-js.firebaseio.com';
 
 const request =  async (url, method, body) => {
-    let options = {method};
-
-    if (method === 'POST') {
-        options.body = body;
-    }
+    let options = method === 'POST' || method === 'PATCH' ? {method, body} : {method};
 
     const res = await fetch(url, options);
 
     const data = await res.json();
+    
     return data;
 }
 
@@ -86,5 +83,15 @@ const movieService = {
     async getMovie(movieId) {
         const res = await request(`${databaseUrl}/movies/${movieId}.json`, 'GET');
         return res;
-    }
+    },
+
+    async deleteMovie(movieId) {
+        const res = await request(`${databaseUrl}/movies/${movieId}.json`, 'DELETE');
+        return res;
+    },
+
+    async editMovie(movieId, movieData) {
+        const res = await request(`${databaseUrl}/movies/${movieId}.json`, 'PATCH', JSON.stringify(movieData));
+        return res;
+    },
 }
