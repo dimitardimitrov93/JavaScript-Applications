@@ -3,7 +3,6 @@ function attachEvents() {
     const movieCardTemplate = Handlebars.compile(document.getElementById('movie-card-template').innerHTML);
     const editMovieTemplate = Handlebars.compile(document.getElementById('edit-movie-template').innerHTML);
 
-    
     Handlebars.registerPartial('navigation-template', navigationTemplate);
     Handlebars.registerPartial('movie-card-template', movieCardTemplate);
     Handlebars.registerPartial('edit-movie-template', editMovieTemplate);
@@ -13,16 +12,20 @@ function attachEvents() {
 
 attachEvents();
 
+window.addEventListener('popstate', (e) => {
+    navigate(location.pathname);
+});
+
 function navigationHandler(e) {
     e.preventDefault();
 
-        if (e.target.tagName === 'A' && e.target.href) {
-            const url = new URL(e.target.href);
-            navigate(url.pathname);
-        } else if (e.target.tagName === 'BUTTON') {
-            const url = new URL(e.target.parentElement.href);
-            navigate(url.pathname);
-        }
+    if (e.target.tagName === 'A' && e.target.href) {
+        const url = new URL(e.target.href);
+        navigate(url.pathname);
+    } else if (e.target.tagName === 'BUTTON') {
+        const url = new URL(e.target.parentElement.href);
+        navigate(url.pathname);
+    }
 
 }
 
@@ -46,10 +49,17 @@ function onRegisterSubmit(e) {
 
     authService.register(email, password)
         .then(data => {
-            displaySuccessNotification('You were registered successfully.');
             navigate('/home');
+            displaySuccessNotification('Successful registration!');
         })
-        .catch(error => displayErrorNotification(error.message));
+        .catch(error => {
+            let errorMessage = error.message
+                .replace(new RegExp(/_/g), ' ')
+                .split(' ')
+                .map(word => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`)
+                .join(' ');
+            displayErrorNotification(`${errorMessage}.`)
+        });
 }
 
 function onLoginSubmit(e) {
@@ -59,10 +69,17 @@ function onLoginSubmit(e) {
     const password = formData.get('password');
     authService.login(email, password)
         .then(data => {
-            displaySuccessNotification('Logged in successfully.');
             navigate('/home');
+            displaySuccessNotification('Login successful.');
         })
-        .catch(error => displayErrorNotification(error.message));
+        .catch(error => {
+            let errorMessage = error.message
+                .replace(new RegExp(/_/g), ' ')
+                .split(' ')
+                .map(word => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`)
+                .join(' ');
+            displayErrorNotification(`${errorMessage}.`)
+        });
 }
 
 function onAddMovieSubmit(e) {
@@ -83,10 +100,10 @@ function onAddMovieSubmit(e) {
         description,
         imageUrl,
         creator,
-        peopleLiked: [], // check
+        peopleLiked: [""], // check
     })
         .then(res => {
-            displaySuccessNotification('Movie added successfully');
+            displaySuccessNotification('Created successfully!');
             navigate('/home');
         })
         .catch(error => displayErrorNotification(error.message));
@@ -111,8 +128,38 @@ function onEditMovieSubmit(e) {
 
     movieService.editMovie(movieId, movieData)
         .then(res => {
-            displaySuccessNotification('Movie edited successfully');
-            navigate('/home');
+            navigate(`/details/${movieId}`);
+            displaySuccessNotification('Eddited successfully.');
+        })
+        .catch(error => displayErrorNotification(error.message));
+}
+
+async function onSearchMovieSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(document.forms['searchForm']);
+    const searchedItem = formData.get('searchedItem').trim();
+
+    const allMovies = await movieService.getAll();
+    allMovies.forEach(movie => {
+        if (movie.title === searchedItem) {
+            navigate(`/details/${movie.movieId}`);
+            return;
+        }
+    })
+}
+
+async function likeMovie(e, movieId) {
+    let currentUser = JSON.parse(localStorage.getItem('auth')).email;
+    let { peopleLiked } = await movieService.getMovie(movieId);
+
+    if (peopleLiked.includes('')) {
+        peopleLiked.splice(peopleLiked.indexOf(''), 1);
+    }
+    peopleLiked.push(currentUser);
+
+    await movieService.likeMovie(movieId, { peopleLiked })
+        .then(res => {
+            navigate(`/details/${movieId}`);
         })
         .catch(error => displayErrorNotification(error.message));
 }
@@ -126,7 +173,7 @@ function displaySuccessNotification(message) {
 
     setTimeout(() => {
         successBoxSectionElem.style.display = 'none';
-    }, 2500);
+    }, 1000);
 }
 
 function displayErrorNotification(message) {
@@ -138,7 +185,7 @@ function displayErrorNotification(message) {
 
     setTimeout(() => {
         errorBoxSectionElem.style.display = 'none';
-    }, 2500);
+    }, 1000);
 }
 
 function navigate(path) {

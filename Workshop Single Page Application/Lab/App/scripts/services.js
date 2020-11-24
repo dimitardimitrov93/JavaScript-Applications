@@ -1,13 +1,13 @@
 const apiKey = 'AIzaSyARQOZyCb3EcyM6F4dHDq4cwvsON1xXD7s';
 const databaseUrl = 'https://movies-spa-js.firebaseio.com';
 
-const request =  async (url, method, body) => {
-    let options = method === 'POST' || method === 'PATCH' ? {method, body} : {method};
+const request = async (url, method, body) => {
+    let options = method === 'POST' || method === 'PATCH' ? { method, body } : { method };
 
     const res = await fetch(url, options);
 
     const data = await res.json();
-    
+
     return data;
 }
 
@@ -25,14 +25,18 @@ const authService = {
             })
         });
 
-        const userData = await res.json();
-        localStorage.setItem('auth', JSON.stringify(userData));
+        const data = await res.json();
 
-        return userData;
+        if (!data.error) {
+            localStorage.setItem('auth', JSON.stringify(data));
+            return Promise.resolve(data);
+        } else {
+            return Promise.reject(data.error);
+        }
     },
 
     async register(email, password) {
-        fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
+        const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -42,8 +46,14 @@ const authService = {
                 password
             })
         })
-            .then(res => res.json())
-            .then(data => console.log(data));
+
+        const data = await res.json();
+
+        if (!data.error) {
+            return Promise.resolve(data);
+        } else {
+            return Promise.reject(data.error);
+        }
     },
 
     getData() {
@@ -64,7 +74,7 @@ const authService = {
 
     logOut() {
         localStorage.removeItem('auth');
-        displaySuccessNotification('Logged out successfully');
+        displaySuccessNotification('Successful logout.');
     },
 };
 
@@ -77,7 +87,7 @@ const movieService = {
 
     async getAll() {
         const res = await request(`${databaseUrl}/movies.json`, 'GET');
-        return Object.keys(res).map(movieId => ({movieId, ...res[movieId]}));
+        return Object.keys(res).map(movieId => ({ movieId, ...res[movieId] }));
     },
 
     async getMovie(movieId) {
@@ -94,4 +104,9 @@ const movieService = {
         const res = await request(`${databaseUrl}/movies/${movieId}.json`, 'PATCH', JSON.stringify(movieData));
         return res;
     },
+
+    async likeMovie(movieId, peopleLiked) {
+        const res = await request(`${databaseUrl}/movies/${movieId}.json`, 'PATCH', JSON.stringify(peopleLiked));
+        return res;
+    }
 }

@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Application 2020</title>
-    <link rel="icon" type="image/png" href="../static/favicon.ico">
-    <link href="../static/css/site.css" type="text/css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/static/favicon.ico">
+    <link href="/static/css/site.css" type="text/css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="./node_modules/handlebars/dist/handlebars.min.js"></script>
-    <script src="./scripts/services.js" defer></script>
-    <script src="./scripts/router.js" defer></script>
-    <script src="./scripts/init.js" defer></script>
+    <script src="/node_modules/handlebars/dist/handlebars.min.js"></script>
+    <script src="/scripts/services.js" defer></script>
+    <script src="/scripts/router.js" defer></script>
+    <script src="/scripts/init.js" defer></script>
 </head>
 
 <body>
@@ -74,9 +74,9 @@
         <h1 class="text-center">Movies</h1>
         <section>
             <a href="/addMovie" class="btn btn-warning" onclick="navigationHandler(event)">Add Movie</a>
-            <form class="search float-right">
+            <form id="searchForm" class="search float-right" onsubmit="onSearchMovieSubmit(event)">
                 <label>Search: </label>
-                <input type="text"/>
+                <input type="text" name="searchedItem"/>
                 <input type="submit" class="btn btn-info" value="Search"/>
             </form>
         </section>
@@ -98,7 +98,7 @@
 
     <script type="text/x-handlebars-template" id="login-form-template">
         {{>navigation-template}}
-        <form id="login-form" class="text-center border border-light p-5" action="" method="" onsubmit="onLoginSubmit(event)">
+        <form id="login-form" class="text-center border border-light p-5" onsubmit="onLoginSubmit(event)">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" class="form-control" placeholder="Email" name="email" value="">
@@ -184,9 +184,14 @@
                     {{#if movieData.isCurrentUserCreator}}
                     <a class="btn btn-danger" href="/delete/{{movieData.movieId}}" onclick="navigationHandler(event)">Delete</a>
                     <a class="btn btn-warning" href="/edit/{{movieData.movieId}}" onclick="navigationHandler(event)">Edit</a>
+
+                    {{else}}
+                        {{#if movieData.userHaventLikedMovieYet}}
+                        <a class="btn btn-primary" href="#" onclick="likeMovie(event, '{{movieData.movieId}}')">Like</a>
+                        {{else}}
+                        <span class="enrolled-span">Liked {{movieData.movieLikes}}</span>
+                        {{/if}}
                     {{/if}}
-                    <a class="btn btn-primary" href="/like/{{movieData.movieId}}" onclick="navigationHandler(event)">Like</a>
-                    <span class="enrolled-span">Liked {{movieData.peopleLiked.length}}</span>
                 </div>
             </div>
         </div>
