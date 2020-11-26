@@ -19,7 +19,7 @@
         <section class="notifications" style="display: none;">
             <p class="notification-message" id="errorBox">Message...</p>
         </section>
-        <section class="notifications" style="display: none;background-color:rgba(1, 131, 29, 0.541);">
+        <section class="notifications" style="display: none; background-color:rgba(1, 131, 29, 0.541);">
             <p class="notification-message" id="successBox">Message...</p>
         </section>
 
@@ -98,7 +98,7 @@
     </script> -->
 
     <script type="text/x-handlebars-template" id="product-card-template">
-        <div class="shoe" onclick="navigationHandler(event)">
+        <div class="shoe" onclick="navigationHandler(event, '{{productId}}')">
             <img src="{{imageUrl}}">
             <h3>{{name}}</h3>
             <a href="/details/{{productId}}">Buy it for ${{price}}</a>
@@ -159,7 +159,7 @@
                 <input type="text" placeholder="Name..." name="name">
             </div>
             <div>
-                <input type="text" placeholder="Price..." name="price">
+                <input type="number" placeholder="Price..." name="price">
             </div>
             <div>
                 <input type="text" placeholder="Image url..." name="imageUrl">
@@ -187,22 +187,51 @@
                 <div class="description"> {{productData.description}}
                     <br>
                     <br>
+                    <span class="buyers">Buyers: {{productData.peopleBought}}</span>
+                    <br>
+                    <br>
                     <p class="price">${{productData.price}}</p>
                 </div>
             </div>
-            <div class="actions">
+            <div class="actions" onclick="navigationHandler(event)">
                 {{#if productData.isCurrentUserCreator}}
-                    <a>Edit</a>
-                    <a>Delete</a>
+                    <a style="text-decoration: none;" href="/edit/{{productData.productId}}">Edit</a>
+                    <a style="text-decoration: none;" href="/delete/{{productData.productId}}">Delete</a>
                 {{else}}
                     {{#if productData.userHaventBoughtProductYet}}
-                    <a>Buy</a>
+                    <a onclick="buyProduct(event, '{{productData.productId}}')">Buy</a>
                     {{else}}
                     <span>You bought it</span>
                     {{/if}}
                 {{/if}}
             </div>
         </div>
+    </script>
+
+    <script type="text/x-handlebars-template" id="edit-product-template">
+        {{>navigation-template}}
+        <h1>Edit Offer</h1>
+            <p class="message"></p>
+            <form id="editProductForm" onsubmit="onEditProductSubmit(event)">
+                <div>
+                    <input type="text" placeholder="Name..." name="name" value="{{productData.name}}"/>
+                </div>
+                <div>
+                    <input type="number" placeholder="Price..." name="price" value="{{productData.price}}"/>
+                </div>
+                <div>
+                    <input type="text" placeholder="Image url..." name="imageUrl" value="{{productData.imageUrl}}"/>
+                </div>
+                <div>
+                    <textarea placeholder="Give us some description about this offer..." name="description">{{productData.description}}</textarea>
+                </div>
+                <div>
+                    <input type="text" placeholder="Brand..." name="brand" value="{{productData.brand}}"/>
+                </div>
+                <div>
+                    <button>Edit</button>
+                </div>
+            </form>
     </script>
 
     <!-- <main>
@@ -231,28 +260,6 @@
             </div>
         </div>
 
-        <h1>Edit Offer</h1>
-        <p class="message"></p>
-        <form>
-            <div>
-                <input type="text" placeholder="Name...">
-            </div>
-            <div>
-                <input type="text" placeholder="Price...">
-            </div>
-            <div>
-                <input type="text" placeholder="Image url...">
-            </div>
-            <div>
-                <textarea placeholder="Give us some description about this offer..."></textarea>
-            </div>
-            <div>
-                <input type="text" placeholder="Brand...">
-            </div>
-            <div>
-                <button>Edit</button>
-            </div>
-        </form>
 
 
 

@@ -1,11 +1,12 @@
 function attachEvents() {
     const navigationTemplate = Handlebars.compile(document.getElementById('navigation-template').innerHTML);
     const productCardTemplate = Handlebars.compile(document.getElementById('product-card-template').innerHTML);
-    // const editMovieTemplate = Handlebars.compile(document.getElementById('edit-movie-template').innerHTML);
+    let counter = 0;
+    // const editProductTemplate = Handlebars.compile(document.getElementById('edit-product-template').innerHTML);
 
     Handlebars.registerPartial('navigation-template', navigationTemplate);
     Handlebars.registerPartial('product-card-template', productCardTemplate);
-    // Handlebars.registerPartial('edit-movie-template', editMovieTemplate);
+    // Handlebars.registerPartial('edit-product-template', editProductTemplate);
 
     navigate('/home');
 }
@@ -16,9 +17,9 @@ window.addEventListener('popstate', (e) => {
     navigate(location.pathname);
 });
 
-function navigationHandler(e) {
+function navigationHandler(e, productId) {
     e.preventDefault();
-
+    
     if (e.target.tagName === 'A' && e.target.href) {
         const url = new URL(e.target.href);
         navigate(url.pathname);
@@ -27,6 +28,8 @@ function navigationHandler(e) {
         navigate(url.pathname);
     } else if (e.target.id === 'home-link') {
         navigate('/home');
+    } else if (e.target.parentElement.classList.value === 'shoe') {
+        navigate(`/details/${productId}`);
     }
 }
 
@@ -87,7 +90,7 @@ function onCreatedOfferSubmit(e) {
     e.preventDefault();
     const formData = new FormData(document.forms['create-offer-form']);
     const name = formData.get('name');
-    const price = formData.get('price');
+    const price = Number(formData.get('price')).toFixed(2);
     const imageUrl = formData.get('imageUrl');
     const description = formData.get('description');
     const brand = formData.get('brand');
@@ -116,11 +119,11 @@ function onCreatedOfferSubmit(e) {
 
 function onEditProductSubmit(e) {
     e.preventDefault();
-    const formData = new FormData(document.forms['editMovieForm']);
+    const formData = new FormData(document.forms['editProductForm']);
 
     const productData = {
         name: formData.get('name'),
-        price: formData.get('price'),
+        price: Number(formData.get('price')).toFixed(2),
         imageUrl: formData.get('imageUrl'),
         description: formData.get('description'),
         brand: formData.get('brand'),
@@ -136,7 +139,7 @@ function onEditProductSubmit(e) {
     productService.editProduct(productId, productData)
         .then(res => {
             navigate(`/details/${productId}`);
-            displaySuccessNotification('Eddited successfully.');
+            displaySuccessNotification('Edited successfully.');
         })
         .catch(error => displayErrorNotification(error.message));
 }
@@ -163,6 +166,7 @@ function displaySuccessNotification(message) {
 
     successBoxParagraphElem.innerHTML = message;
     successBoxSectionElem.style.display = 'block';
+    successBoxSectionElem.scrollIntoView(true);
 
     setTimeout(() => {
         successBoxSectionElem.style.display = 'none';
@@ -175,7 +179,7 @@ function displayErrorNotification(message) {
 
     errorBoxParagraphElem.innerHTML = message;
     errorBoxSectionElem.style.display = 'block';
-
+    errorBoxSectionElem.scrollIntoView(true);
     setTimeout(() => {
         errorBoxSectionElem.style.display = 'none';
     }, 1000);

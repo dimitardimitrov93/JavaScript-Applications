@@ -3,10 +3,9 @@ const router = async (fullPath) => {
         '/home': 'home-template',
         '/login': 'login-form-template',
         '/register': 'register-form-template',
-        // '/shoe-shelf': 'shoe-shelf-template',
         '/createOffer': 'createOffer-form-template',
         '/details': 'product-details-template',
-        // '/edit': 'edit-movie-template',
+        '/edit': 'edit-product-template',
     };
 
     let path = fullPath;
@@ -45,7 +44,7 @@ const router = async (fullPath) => {
             break;
         case '/delete':
             if (!window.confirm('Are you sure you want to delete this product?')) return;
-            await productService.deleteMovie(productId)
+            await productService.deleteProduct(productId)
                 .then(res => {
                     displaySuccessNotification('Product deleted successfully.');
                     navigate(`/home`);
@@ -53,7 +52,7 @@ const router = async (fullPath) => {
                 .catch(error => displayErrorNotification(error.message));
             return;
         case '/edit':
-            templateData.movieData = await productService.getMovie(productId);
+            templateData.productData = await productService.getProduct(productId);
             break;
         // case '/like':
         //     currentUser = JSON.parse(localStorage.getItem('auth')).email;
