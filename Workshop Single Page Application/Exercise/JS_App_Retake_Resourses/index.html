@@ -1,272 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../public/styles.css">
+        <link rel="icon" type="image/png" href="./public/favicon.png">
+        <script src="/node_modules/handlebars/dist/handlebars.min.js"></script>
+        <script src="/scripts/services.js" defer></script>
+        <script src="/scripts/router.js" defer></script>
+        <script src="/scripts/init.js" defer></script>
+        <title>Shoe Shelf</title>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../public/styles.css">
-    <link rel="icon" type="image/png" href="./public/favicon.png">
-    <script src="/node_modules/handlebars/dist/handlebars.min.js"></script>
-    <script src="/scripts/services.js" defer></script>
-    <script src="/scripts/router.js" defer></script>
-    <script src="/scripts/init.js" defer></script>
-    <title>Shoe Shelf</title>
-</head>
+    <body>
 
-<body>
+        <main>
+            <section class="notifications" style="display: none;">
+                <p class="notification-message" id="errorBox">Message...</p>
+            </section>
+            <section class="notifications" style="display: none; background-color:rgba(1, 131, 29, 0.541);">
+                <p class="notification-message" id="successBox">Message...</p>
+            </section>
 
-    <main>
-        <section class="notifications" style="display: none;">
-            <p class="notification-message" id="errorBox">Message...</p>
-        </section>
-        <section class="notifications" style="display: none; background-color:rgba(1, 131, 29, 0.541);">
-            <p class="notification-message" id="successBox">Message...</p>
-        </section>
+            <div id="root"></div>
+        </main>
 
-        <div id="root"></div>
-    </main>
+        <footer>
+            <p><a href="https://softuni.bg">Software University</a> - JS Applications @ 2020</p>
+        </footer>
 
-    <footer>
-        <p><a href="https://softuni.bg">Software University</a> - JS Applications @ 2020</p>
-    </footer>
+        <script type="text/x-handlebars-template" id="navigation-template">
+            <header>
+                <nav onclick="navigationHandler(event)">
+                    <ul>
+                        {{#if isAuthenticated}}
+                            <li>
+                                <a href="/createOffer">Create new offer</a>
+                            </li> 
+                            <li>
+                                <a href="/home">
+                                    <img src="../public/sneakers.png" alt="sneakers" id="home-link">
+                                </a>
+                            </li>
+                            <li>Welcome, {{email}} | 
+                                <a  href="/logout">Logout</a>
+                            </li>
 
-    <script type="text/x-handlebars-template" id="navigation-template">
-        <header>
-            <nav onclick="navigationHandler(event)">
-                <ul>
-                    {{#if isAuthenticated}}
+                        {{else}}
+                        <li class="site-logo">Shoe</li>
                         <li>
-                            <a href="/createOffer">Create new offer</a>
-                        </li> 
-                        <li>
-                            <a href="/home">
-                                <img src="../public/sneakers.png" alt="sneakers" id="home-link">
-                            </a>
-                        </li>
-                        <li>Welcome, {{email}} | 
-                            <a  href="/logout">Logout</a>
-                        </li>
-
-                    {{else}}
-                    <li class="site-logo">Shoe</li>
-                    <li>
-                        <a href="/home">
                             <img src="../public/sneakers.png" alt="sneakers" id="home-link">
-                        </a>
-                    </li> 
-                    <li class="site-logo">Shelf</li>
-                    {{/if}}
-                </ul>
-            </nav>
-        </header>
-    </script>
+                        </li> 
+                        <li class="site-logo">Shelf</li>
+                        {{/if}}
+                    </ul>
+                </nav>
+            </header>
+        </script>
 
-    <script type="text/x-handlebars-template" id="home-template">
-        {{>navigation-template}}
+        <script type="text/x-handlebars-template" id="home-template">
+            {{>navigation-template}}
 
-        {{#if isAuthenticated}}
-            <div class="shoes">
-                {{#each products}}
-                    {{>product-card-template}}
-                {{else}}
-                    No shoes to display. Be the first to create a new offer...
-                {{/each}}
-            </div>
-        {{else}}
-        <div class="container">
-            <div class="about-us">
-                <div>
-                    <img src="../public/shoes.jpg" alt="">
-                    <img src="../public/shoes2.jpg" alt="">
-                </div>
-                <p>
-                    <a href="/register" onclick="navigationHandler(event)">Register Now</a> and Try it!
-                </p>
-            </div>
-        </div>
-        {{/if}}
-    </script>
-
-    <!-- <script type="text/x-handlebars-template" id="shoe-shelf-template">
-        <div class="shoes">
-            {{#each products}}
-                {{>product-card-template}}
-            {{else}}
-            <p>No shoes to display. Be the first to create a new offer...</p>
-            {{/each}}
-        </div>
-    </script> -->
-
-    <script type="text/x-handlebars-template" id="product-card-template">
-        <div class="shoe" onclick="navigationHandler(event, '{{productId}}')">
-            <img src="{{imageUrl}}">
-            <h3>{{name}}</h3>
-            <a href="/details/{{productId}}">Buy it for ${{price}}</a>
-        </div>
-    </script>
-
-    <script type="text/x-handlebars-template" id="register-form-template">
-        {{>navigation-template}}
-        <h1>Register</h1>
-            <p class="form-info">Already registered?
-            <a href="/login" onclick="navigationHandler(event)">Login now</a> and have some fun!
-        </p>
-
-            <form id="register-form" onsubmit="onRegisterSubmit(event)">
-                <div>
-                    <input type="email" placeholder="Email..." name="email" />
-                </div>
-                <div>
-                    <input type="password" placeholder="Password" name="password" />
-                </div>
-                <div>
-                    <input type="password" placeholder="Re-password" name="repeatPassword" />
-                </div>
-                <div>
-                    <p class="message"></p>
-                    <button>Register</button>
-                </div>
-            </form>
-    </script>
-
-    <script type="text/x-handlebars-template" id="login-form-template">
-        {{>navigation-template}}
-        <h1>Login</h1>
-        <p class="form-info">Don't have account?
-            <a href="/register" onclick="navigationHandler(event)">Register now</a> and fix that!
-        </p>
-        <form id="login-form" onsubmit="onLoginSubmit(event)">
-            <div>
-                <input type="email" placeholder="Email..." name="email">
-            </div>
-
-            <div>
-                <input type="password" placeholder="Password..." name="password">
-            </div>
-            <div>
-                <button>Login</button>
-            </div>
-        </form>
-    </script>
-
-    <script type="text/x-handlebars-template" id="createOffer-form-template">
-        {{>navigation-template}}
-
-        <h1>Create New Offer</h1>
-        <p class="message"></p>
-        <form id="create-offer-form" onsubmit="onCreatedOfferSubmit(event)">
-            <div>
-                <input type="text" placeholder="Name..." name="name">
-            </div>
-            <div>
-                <input type="number" placeholder="Price..." name="price">
-            </div>
-            <div>
-                <input type="text" placeholder="Image url..." name="imageUrl">
-            </div>
-            <div>
-                <textarea placeholder="Give us some description about this offer..." name="description"></textarea>
-            </div>
-            <div>
-                <input type="text" placeholder="Brand..." name="brand">
-            </div>
-            <div>
-                <button>Create</button>
-            </div>
-        </form>
-    </script>
-
-    <script type="text/x-handlebars-template" id="product-details-template">
-        {{>navigation-template}}
-
-        <div class="offer-details">
-            <h1>{{productData.name}}</h1>
-            <div class="info">
-                <img src="{{productData.imageUrl}}"
-                    alt="{{productData.name}}">
-                <div class="description"> {{productData.description}}
-                    <br>
-                    <br>
-                    <span class="buyers">Buyers: {{productData.peopleBought}}</span>
-                    <br>
-                    <br>
-                    <p class="price">${{productData.price}}</p>
-                </div>
-            </div>
-            <div class="actions" onclick="navigationHandler(event)">
-                {{#if productData.isCurrentUserCreator}}
-                    <a style="text-decoration: none;" href="/edit/{{productData.productId}}">Edit</a>
-                    <a style="text-decoration: none;" href="/delete/{{productData.productId}}">Delete</a>
-                {{else}}
-                    {{#if productData.userHaventBoughtProductYet}}
-                    <a onclick="buyProduct(event, '{{productData.productId}}')">Buy</a>
+            {{#if isAuthenticated}}
+                <div class="shoes">
+                    {{#each products}}
+                        {{>product-card-template}}
                     {{else}}
-                    <span>You bought it</span>
-                    {{/if}}
-                {{/if}}
+                        <p class="no-shoes-message">No shoes to display. Be the first to create a new offer...</p>
+                    {{/each}}
+                </div>
+            {{else}}
+            <div class="container">
+                <div class="about-us">
+                    <div>
+                        <img src="../public/shoes.jpg" alt="">
+                        <img src="../public/shoes2.jpg" alt="">
+                    </div>
+                    <p>
+                        <a href="/register" onclick="navigationHandler(event)">Register Now</a> and Try it!
+                    </p>
+                </div>
             </div>
-        </div>
-    </script>
+            {{/if}}
+        </script>
 
-    <script type="text/x-handlebars-template" id="edit-product-template">
-        {{>navigation-template}}
-        <h1>Edit Offer</h1>
-            <p class="message"></p>
-            <form id="editProductForm" onsubmit="onEditProductSubmit(event)">
+        <script type="text/x-handlebars-template" id="product-card-template">
+            <div class="shoe" onclick="navigationHandler(event, '{{productId}}')">
+                <img src="{{imageUrl}}">
+                <h3>{{name}}</h3>
+                <a href="/details/{{productId}}">Buy it for ${{price}}</a>
+            </div>
+        </script>
+
+        <script type="text/x-handlebars-template" id="register-form-template">
+            {{>navigation-template}}
+            <h1>Register</h1>
+                <p class="form-info">Already registered?
+                <a href="/login" onclick="navigationHandler(event)">Login now</a> and have some fun!
+            </p>
+
+                <form id="register-form" onsubmit="onRegisterSubmit(event)">
+                    <div>
+                        <input type="email" placeholder="Email..." name="email" />
+                    </div>
+                    <div>
+                        <input type="password" placeholder="Password" name="password" />
+                    </div>
+                    <div>
+                        <input type="password" placeholder="Re-password" name="repeatPassword" />
+                    </div>
+                    <div>
+                        <p class="message"></p>
+                        <button>Register</button>
+                    </div>
+                </form>
+        </script>
+
+        <script type="text/x-handlebars-template" id="login-form-template">
+            {{>navigation-template}}
+            <h1>Login</h1>
+            <p class="form-info">Don't have account?
+                <a href="/register" onclick="navigationHandler(event)">Register now</a> and fix that!
+            </p>
+            <form id="login-form" onsubmit="onLoginSubmit(event)">
                 <div>
-                    <input type="text" placeholder="Name..." name="name" value="{{productData.name}}"/>
+                    <input type="email" placeholder="Email..." name="email">
+                </div>
+
+                <div>
+                    <input type="password" placeholder="Password..." name="password">
                 </div>
                 <div>
-                    <input type="number" placeholder="Price..." name="price" value="{{productData.price}}"/>
-                </div>
-                <div>
-                    <input type="text" placeholder="Image url..." name="imageUrl" value="{{productData.imageUrl}}"/>
-                </div>
-                <div>
-                    <textarea placeholder="Give us some description about this offer..." name="description">{{productData.description}}</textarea>
-                </div>
-                <div>
-                    <input type="text" placeholder="Brand..." name="brand" value="{{productData.brand}}"/>
-                </div>
-                <div>
-                    <button>Edit</button>
+                    <button>Login</button>
                 </div>
             </form>
-    </script>
+        </script>
 
-    <!-- <main>
+        <script type="text/x-handlebars-template" id="createOffer-form-template">
+            {{>navigation-template}}
 
-        <div class="offer-details">
-            <h1>Under Armour HOVR</h1>
-            <div class="info">
-                <img src="https://i1.t4s.cz/products/3023295-602/under-armour-ua-w-hovr-phantom-se-trek-263676-3023295-603.jpg"
-                    alt="">
-                <div class="description">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Facilis explicabo
-                    voluptatibus odio? Deleniti amet qui tenetur ipsa enim blanditiis laboriosam distinctio, dignissimos
-                    cupiditate, delectus autem. Explicabo exercitationem voluptatibus reprehenderit repellat. Lorem
-                    ipsum dolor, sit amet consectetur adipisicing elit. Tempore reiciendis maiores aliquid nobis,
-                    accusantium dolore iste ipsa atque deserunt corrupti maxime, alias neque libero temporibus expedita
-                    magni perferendis aut nostrum.
-                    <br>
-                    <br>
-                    <p class="price">$149.99</p>
+            <h1>Create New Offer</h1>
+            <p class="message"></p>
+            <form id="create-offer-form" onsubmit="onCreatedOfferSubmit(event)">
+                <div>
+                    <input type="text" placeholder="Name..." name="name">
+                </div>
+                <div>
+                    <input type="number" placeholder="Price..." name="price">
+                </div>
+                <div>
+                    <input type="text" placeholder="Image url..." name="imageUrl">
+                </div>
+                <div>
+                    <textarea placeholder="Give us some description about this offer..." name="description"></textarea>
+                </div>
+                <div>
+                    <input type="text" placeholder="Brand..." name="brand">
+                </div>
+                <div>
+                    <button>Create</button>
+                </div>
+            </form>
+        </script>
+
+        <script type="text/x-handlebars-template" id="product-details-template">
+            {{>navigation-template}}
+
+            <div class="offer-details">
+                <h1>{{productData.name}}</h1>
+                <div class="info">
+                    <img src="{{productData.imageUrl}}"
+                        alt="{{productData.name}}">
+                    <div class="description"> {{productData.description}}
+                        <br>
+                        <br>
+                        <span class="buyers">Buyers: {{productData.peopleBought}}</span>
+                        <br>
+                        <br>
+                        <p class="price">${{productData.price}}</p>
+                    </div>
+                </div>
+                <div class="actions" onclick="navigationHandler(event)">
+                    {{#if productData.isCurrentUserCreator}}
+                        <a style="text-decoration: none;" href="/edit/{{productData.productId}}">Edit</a>
+                        <a style="text-decoration: none;" href="/delete/{{productData.productId}}">Delete</a>
+                    {{else}}
+                        {{#if productData.userHaventBoughtProductYet}}
+                        <a onclick="buyProduct(event, '{{productData.productId}}')">Buy</a>
+                        {{else}}
+                        <span>You bought it</span>
+                        {{/if}}
+                    {{/if}}
                 </div>
             </div>
-            <div class="actions">
-                <a>Edit</a>
-                <a>Delete</a>
-                <a>Buy</a>
-                <span>You bought it</span>
-            </div>
-        </div>
+        </script>
 
+        <script type="text/x-handlebars-template" id="edit-product-template">
+            {{>navigation-template}}
+            <h1>Edit Offer</h1>
+                <p class="message"></p>
+                <form id="editProductForm" onsubmit="onEditProductSubmit(event)">
+                    <div>
+                        <input type="text" placeholder="Name..." name="name" value="{{productData.name}}"/>
+                    </div>
+                    <div>
+                        <input type="number" placeholder="Price..." name="price" value="{{productData.price}}"/>
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Image url..." name="imageUrl" value="{{productData.imageUrl}}"/>
+                    </div>
+                    <div>
+                        <textarea placeholder="Give us some description about this offer..." name="description">{{productData.description}}</textarea>
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Brand..." name="brand" value="{{productData.brand}}"/>
+                    </div>
+                    <div>
+                        <button>Edit</button>
+                    </div>
+                </form>
+        </script>
 
-
-
-
-
-    </main> -->
-
-</body>
-
+    </body>
 </html>

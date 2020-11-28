@@ -34,7 +34,7 @@ header nav ul {
     font-size: 42px;
 }
 
-header nav ul li a img {
+header nav ul li img {
     max-width: 100px;
 }
 
@@ -258,6 +258,12 @@ main p.message {
     color: darkred;
     font-style: italic;
     margin: 1%;
+}
+
+main p.no-shoes-message {
+    margin-top: 1.3em;
+    font-size: 2.3em;
+    color: var(--main-orange);
 }
 
 form div button {

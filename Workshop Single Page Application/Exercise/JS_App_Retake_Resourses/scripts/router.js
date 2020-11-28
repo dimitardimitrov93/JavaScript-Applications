@@ -44,6 +44,7 @@ const router = async (fullPath) => {
             break;
         case '/delete':
             if (!window.confirm('Are you sure you want to delete this product?')) return;
+
             await productService.deleteProduct(productId)
                 .then(res => {
                     displaySuccessNotification('Product deleted successfully.');
@@ -54,29 +55,9 @@ const router = async (fullPath) => {
         case '/edit':
             templateData.productData = await productService.getProduct(productId);
             break;
-        // case '/like':
-        //     currentUser = JSON.parse(localStorage.getItem('auth')).email;
-        //     templateData.movieData = await productService.getMovie(movieId);
-        //     let peopleBought = templateData.movieData.peopleLiked;
-        //     if (peopleLiked.includes('')) {
-        //         peopleLiked.splice(peopleLiked.indexOf(''), 1);
-        //     }
-        //     peopleLiked.push(currentUser);
-
-        //     await movieService.likeMovie(movieId, { peopleLiked })
-        //         .then(res => {
-        //             navigate(`/details/${movieId}`);
-        //         })
-        //         .catch(error => displayErrorNotification(error.message));
-        //     return;
         default:
             break;
     }
-
-    // for (const key in templateData.movies) {
-    //     const movieId = key;
-    //     templateData.movies[key].movieId = movieId;
-    // }
 
     const rootDivElement = document.getElementById('root');
     const template = Handlebars.compile(document.getElementById(templateId).innerHTML);

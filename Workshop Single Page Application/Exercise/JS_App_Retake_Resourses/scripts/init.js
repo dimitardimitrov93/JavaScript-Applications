@@ -1,12 +1,9 @@
 function attachEvents() {
     const navigationTemplate = Handlebars.compile(document.getElementById('navigation-template').innerHTML);
     const productCardTemplate = Handlebars.compile(document.getElementById('product-card-template').innerHTML);
-    let counter = 0;
-    // const editProductTemplate = Handlebars.compile(document.getElementById('edit-product-template').innerHTML);
 
     Handlebars.registerPartial('navigation-template', navigationTemplate);
     Handlebars.registerPartial('product-card-template', productCardTemplate);
-    // Handlebars.registerPartial('edit-product-template', editProductTemplate);
 
     navigate('/home');
 }
@@ -14,7 +11,7 @@ function attachEvents() {
 attachEvents();
 
 window.addEventListener('popstate', (e) => {
-    navigate(location.pathname);
+    router(location.pathname);
 });
 
 function navigationHandler(e, productId) {
@@ -108,7 +105,7 @@ function onCreatedOfferSubmit(e) {
         imageUrl,
         brand,
         creator,
-        peopleBought: [""], // check
+        peopleBought: [""],
     })
         .then(res => {
             displaySuccessNotification('Created successfully!');
@@ -151,6 +148,7 @@ async function buyProduct(e, productId) {
     if (peopleBought.includes('')) {
         peopleBought.splice(peopleBought.indexOf(''), 1);
     }
+    
     peopleBought.push(currentUser);
 
     await productService.buyProduct(productId, { peopleBought })
