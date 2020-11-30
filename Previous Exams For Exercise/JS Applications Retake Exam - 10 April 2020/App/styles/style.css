@@ -1,0 +1,67 @@
+@import 'reset.css';
+@import 'header.css';
+@import 'home.css';
+@import 'login.css';
+@import 'register.css';
+@import 'details.css';
+
+html {
+  font-family: sans-serif;
+}
+
+
+.msg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  padding: 15px;
+  position: fixed;
+  animation: appear 1 1s;
+  top: 100px;
+  right: 100px;
+  border-radius: 5px;
+}
+
+.notifications {
+  background-color: rgba(238, 74, 74, 0.699);
+  margin: 0 auto;
+  text-align: center;
+  padding: 1%;
+  border-radius: 6px;
+  color: white;
+  font-style: italic;
+  text-decoration: underline;
+  box-shadow: 0 5px 10px #cccccc;
+}
+
+@keyframes appear {
+  0% {
+    transform: translate(0, -150%);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes fade {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    opacity: 0;
+  }
+
+
+  100% {
+    transform: translate(0, -150%);
+    opacity: 0;
+  }
+}
