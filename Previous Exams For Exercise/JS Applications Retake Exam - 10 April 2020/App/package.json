@@ -1,0 +1,16 @@
+{
+  "name": "myblog-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "init.js",
+  "scripts": {
+    "start": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dimitar Dimitrov",
+  "license": "MIT",
+  "dependencies": {
+    "handlebars": "^4.7.6",
+    "lite-server": "^2.6.1"
+  }
+}
