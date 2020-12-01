@@ -5,7 +5,7 @@ function attachEvents() {
     Handlebars.registerPartial('navigation-template', navigationTemplate);
     Handlebars.registerPartial('product-card-template', postCardTemplate);
 
-    navigate('/');
+    navigate(new URL(location.href).pathname);
 }
 
 attachEvents();
@@ -21,7 +21,7 @@ function navigationHandler(e) {
         const url = new URL(e.target.href);
         navigate(url.pathname);
     } else if (e.target.parentElement.id === 'close-btn' || e.target.innerHTML === 'MyBlog') {
-        navigate('/home');
+        navigate('/');
     } 
 }
 

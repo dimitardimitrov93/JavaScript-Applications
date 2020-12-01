@@ -20,12 +20,13 @@ const authService = {
             },
             body: JSON.stringify({
                 email,
-                password
-            })
+                password,
+                returnSecureToken: true, // important
+            }),
         });
 
         const data = await res.json();
-
+        
         if (!data.error) {
             localStorage.setItem('auth', JSON.stringify(data));
             return Promise.resolve(data);
@@ -42,7 +43,8 @@ const authService = {
             },
             body: JSON.stringify({
                 email,
-                password
+                password,
+                returnSecureToken: true,
             })
         })
 
@@ -62,6 +64,7 @@ const authService = {
             return {
                 isAuthenticated: Boolean(data.idToken),
                 email: data.email,
+                idToken: data.idToken,
             }
         } else {
             return {
@@ -78,9 +81,10 @@ const authService = {
 };
 
 const postService = {
-
+    //?auth=${authService.getData().idToken}
+    //".write": "auth !== null",
     async add(postData) {
-        const res = await request(`${databaseUrl}/posts.json`, 'POST', JSON.stringify(postData));
+        const res = await request(`${databaseUrl}/posts.json?auth=${authService.getData().idToken}`, 'POST', JSON.stringify(postData));
         return res;
     },
 
@@ -95,12 +99,12 @@ const postService = {
     },
 
     async deletePost(postId) {
-        const res = await request(`${databaseUrl}/posts/${postId}.json`, 'DELETE');
+        const res = await request(`${databaseUrl}/posts/${postId}.json?auth=${authService.getData().idToken}`, 'DELETE');
         return res;
     },
 
     async editPost(postId, postData) {
-        const res = await request(`${databaseUrl}/posts/${postId}.json`, 'PATCH', JSON.stringify(postData));
+        const res = await request(`${databaseUrl}/posts/${postId}.json?auth=${authService.getData().idToken}`, 'PATCH', JSON.stringify(postData));
         return res;
     },
 }

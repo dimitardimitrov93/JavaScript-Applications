@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="/styles/style.css">
   <title>MyBlog</title>
 
   <!-- Modules -->
@@ -31,7 +31,7 @@
   <header id="header">
     <a href="/" onclick="navigationHandler(event)"><h1>MyBlog</h1></a>
     {{#if isAuthenticated}}
-    <h2>Welcome <span>{{email}}!</span>!</h2>
+    <h2>Welcome, <span>{{email}}</span>!</h2>
     {{/if}}
     <nav id="nav" onclick="navigationHandler(event)">
       <ul>
@@ -155,7 +155,7 @@
       <h1>Title: {{postData.title}}</h1>
       <h2>Category: {{postData.category}}</h2>
       <h3>Content: {{postData.content}}</h3>
-      <a href="/">Back to Home</a>
+      <a href="/" onclick="navigationHandler(event)">Back to Home</a>
     </div>
   </section>
   </script>
