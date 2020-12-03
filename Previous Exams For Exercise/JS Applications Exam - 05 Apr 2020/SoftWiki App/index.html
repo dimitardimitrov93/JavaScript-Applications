@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>Document</title>
+    <!-- Modules -->
+    <script src="/node_modules/handlebars/dist/handlebars.js"></script>
+    <!-- Scripts -->
+    <script src="/scripts/services.js" defer></script>
+    <script src="/scripts/router.js" defer></script>
+    <script src="/scripts/init.js" defer></script>
+</head>
+
+<body id="root">
+
+    <section class="notifications" style="display: none;">
+        <p class="notification-message" id="errorBox">Message...</p>
+    </section>
+    <section class="notifications" style="display: none;">
+        <p class="notification-message" id="successBox">Message...</p>
+    </section>
+
+    <div id="app"></div>
+
+    <!-- Footer -->
+    <footer>My Site © Show info....</footer>
+
+    <script id="navigation-template" type="text/x-handlebars-template">
+    <!-- Header -->
+    <header onclick="navigationHandler(event)">
+        {{#if isAuthenticated}}
+        <h1><a class="home" href="/home">SoftWiki</a></h1>
+        <nav class="nav-buttons">
+            <a href="/create-article">Create</a>
+            <a href="/logout">Logout</a>
+        </nav>
+
+        {{else}}
+        <h1><a class="home" href="/login">SoftWiki</a></h1>
+        <nav class="nav-buttons">
+            <a href="/register">Register</a>
+        </nav>
+        {{/if}}
+    </header>
+    </script>
+
+    <script type="text/x-handlebars-template" id="home-template">
+    {{>navigation-template}}
+    <div class="content">
+        <section class="js">
+            <h2>JavaScript</h2>
+            <div class="articles" onclick="navigationHandler(event)">
+                {{#each categories.jsArticles}}
+                <article>
+                    <h3>{{title}}</h3>
+                    <p>{{content}}</p>
+                    {{#if isAuthenticated}}
+                    <a href="/details/{{articleId}}" class="btn details-btn">Details</a>
+                    {{/if}}
+                </article>
+                {{else}}
+                <h3 class="no-articles">No articles yet</h3>
+                {{/each}}
+            </div>
+        </section>
+
+        <section class="CSharp">
+            <h2>C#</h2>
+            <div class="articles" onclick="navigationHandler(event)">
+                {{#each categories.cSharpArticles}}
+                <article>
+                    <h3>{{title}}</h3>
+                    <p>{{content}}</p>
+                    {{#if isAuthenticated}}
+                    <a href="/details/{{articleId}}" class="btn details-btn">Details</a>
+                    {{/if}}
+                </article>
+                {{else}}
+                <h3 class="no-articles">No articles yet</h3>
+                {{/each}}
+            </div>
+        </section>
+
+        <section class="Java">
+            <h2>Java</h2>
+            <div class="articles" onclick="navigationHandler(event)">
+                {{#each categories.javaArticles}}
+                <article>
+                    <h3>{{title}}</h3>
+                    <p>{{content}}</p>
+                    {{#if isAuthenticated}}
+                    <a href="/details/{{articleId}}" class="btn details-btn">Details</a>
+                    {{/if}}
+                </article>
+                {{else}}
+                <h3 class="no-articles">No articles yet</h3>
+                {{/each}}
+            </div>
+        </section>
+
+        <section class="Python">
+            <h2>Python</h2>
+            <div class="articles" onclick="navigationHandler(event)">
+                {{#each categories.pythonArticles}}
+                <article>
+                    <h3>{{title}}</h3>
+                    <p>{{content}}</p>
+                    {{#if isAuthenticated}}
+                    <a href="/details/{{articleId}}" class="btn details-btn">Details</a>
+                    {{/if}}
+                </article>
+                {{else}}
+                <h3 class="no-articles">No articles yet</h3>
+                {{/each}}
+            </div> 
+        </section>
+    </div>
+    </script>
+
+    <script type="text/x-handlebars-template" id="login-form-template">
+    <!-- Login -->
+    {{>navigation-template}}
+    <div class="container auth">
+        <form id="login-form" onsubmit="onLoginSubmit(event)">
+            <fieldset>
+                <legend>Login</legend>
+                <blockquote>Knowledge is like money: to be of value it must circulate, and in circulating it can
+                    increase in quantity and, hopefully, in value</blockquote>
+                <p class="field email">
+                    <input type="email" id="email" name="email" placeholder="maria@email.com">
+                    <label for="email">Email:</label>
+                </p>
+                <p class="field password">
+                    <input type="password" id="login-pass" name="password">
+                    <label for="login-pass">Password:</label>
+                </p>
+                <p class="field submit">
+                    <button class="btn submit" type="submit">Log In</button>
+                </p>
+                <p class="field">
+                    <span>If you don't have profile click <a href="/register"
+                            onclick="navigationHandler(event)">here</a></span>
+                </p>
+            </fieldset>
+        </form>
+    </div>
+    </script>
+
+    <script type="text/x-handlebars-template" id="register-form-template">
+    {{>navigation-template}}
+    <!-- Register -->
+    <div class="container auth">
+        <form id="register-form" onsubmit="onRegisterSubmit(event)">
+            <fieldset>
+                <legend>Register</legend>
+                <blockquote>Knowledge is not simply another commodity. On the contrary. Knowledge is never used up. It
+                    increases by diffusion and grows by dispersion.</blockquote>
+                <p class="field email">
+                    <input type="email" id="email" name="email" placeholder="maria@email.com">
+                    <label for="email">Email:</label>
+                </p>
+                <p class="field password">
+                    <input type="password" name="password" id="register-pass">
+                    <label for="register-pass">Password:</label>
+                </p>
+                <p class="field password">
+                    <input type="password" name="rep-pass" id="rep-pass">
+                    <label for="rep-pass">Repeat password:</label>
+                </p>
+                <p class="field submit">
+                    <button class="btn submit" type="submit">Register</button>
+                </p>
+                <p class="field">
+                    <span>If you already have profile click <a href="/login" onclick="navigationHandler(event)">here</a></span>
+                </p>
+            </fieldset>
+        </form>
+    </div>
+    </script>
+
+    <script type="text/x-handlebars-template" id="create-article-form-template">
+    {{>navigation-template}}
+
+    <!-- Create -->
+    <div class="container">
+        <form id="create-article-form" onsubmit="onCreatedArticleSubmit(event)">
+            <fieldset>
+                <legend>Create article</legend>
+                <p class="field title">
+                    <input type="text" id="title" name="title" placeholder="Arrays">
+                    <label for="title">Title:</label>
+                </p>
+
+                <p class="field category">
+                    <input type="text" id="category" name="category" placeholder="JavaScript">
+                    <label for="category">Category:</label>
+                </p>
+                <p class="field content">
+                    <textarea name="content" id="content"></textarea>
+                    <label for="content">Content:</label>
+                </p>
+
+                <p class="field submit">
+                    <button class="btn submit" type="submit">Create</button>
+                </p>
+
+            </fieldset>
+        </form>
+    </div>
+    </script>
+
+    <script type="text/x-handlebars-template" id="edit-article-template">
+    {{>navigation-template}}
+    <!-- Edit -->
+    <div class="container">
+        <form id="editArticleForm" onsubmit="onEditArticleSubmit(event)">
+            <fieldset>
+                <legend>Edit article</legend>
+                <p class="field title">
+                    <input type="text" name="title" id="title" placeholder="Arrays" value="{{articleData.title}}">
+                    <label for="title">Title:</label>
+                </p>
+
+                <p class="field category">
+                    <input type="text" name="category" id="category" placeholder="JavaScript" value="{{articleData.category}}">
+                    <label for="category">Category:</label>
+                </p>
+                <p class="field content">
+                    <textarea name="content" id="content">{{articleData.content}}</textarea>
+                    <label for="content">Content:</label>
+                </p>
+
+                <p class="field submit">
+                    <button class="btn submit" type="submit">Edit</button>
+                </p>
+
+            </fieldset>
+        </form>
+    </div>
+    </script>
+
+    <script type="text/x-handlebars-template" id="article-details-template">
+    {{>navigation-template}}
+        <div class="container details">
+            <div class="details-content">
+                <h2>{{articleData.title}}</h2>
+                <strong>{{articleData.category}}</strong>
+                <p>{{articleData.content}}</p>
+                <div class="buttons" onclick="navigationHandler(event)">
+                    {{#if articleData.isCurrentUserCreator}}
+                    <a href="/delete/{{articleData.articleId}}" class="btn delete">Delete</a>
+                    <a href="/edit/{{articleData.articleId}}" class="btn edit">Edit</a>
+                    <a href="/home" class="btn edit">Back</a>
+                    {{else}}
+                    <a href="/home" class="btn edit">Back</a>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </script>
+</body>
+
+</html>
