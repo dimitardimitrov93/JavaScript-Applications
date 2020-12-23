@@ -1,0 +1,8 @@
+/* .message-component-container ul {
+    
+} */
+
+.message-component-container li {
+    list-style: none;
+    color: salmon;
+}
