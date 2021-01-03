@@ -1,7 +1,7 @@
 import { html } from '../../node_modules/lit-html/lit-html.js';
 
-export default () => html`
-    <header>
+export default ({ navigationHandler }) => html`
+    <header @click=${navigationHandler}>
         <h1><a class="home" href="/">SoftWiki</a></h1>
         <nav class="nav-buttons">
             <a href="/create">Create</a>
