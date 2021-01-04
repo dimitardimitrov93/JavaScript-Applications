@@ -11,7 +11,6 @@ export default ({ navigationHandler, isAuthenticated, email }) => html`
                     <a href="#" @click=${logOut}>Logout</a>
                 `
                 : html`
-                    <a href="/login">Login</a>
                     <a href="/register">Register</a>
                 `
             }

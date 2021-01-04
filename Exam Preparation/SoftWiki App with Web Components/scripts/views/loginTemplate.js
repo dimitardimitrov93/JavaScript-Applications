@@ -1,6 +1,6 @@
 import { html } from '../../node_modules/lit-html/lit-html.js';
 
-export default ({ onLoginSubmit }) => html`
+export default ({ navigationHandler, onLoginSubmit }) => html`
         <div class="container auth">
         <form @submit=${onLoginSubmit}>
             <fieldset>
@@ -18,7 +18,7 @@ export default ({ onLoginSubmit }) => html`
                     <button class="btn submit" type="submit">Log In</button>
                 </p>
                 <p class="field">
-                    <span>If you don't have profile click <a href="#">here</a></span>
+                    <span>If you don't have profile click <a href="/register" @click=${navigationHandler}>here</a></span>
                 </p>
             </fieldset>
         </form>

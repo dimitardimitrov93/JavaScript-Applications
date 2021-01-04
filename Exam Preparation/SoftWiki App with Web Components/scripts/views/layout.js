@@ -5,7 +5,7 @@ import footerTemplate from './footerTemplate.js';
 export default (children, props) => html`
     ${headerTemplate(props)}
 
-    ${children}
+    ${children(props)}
 
     ${footerTemplate()}
 `;
