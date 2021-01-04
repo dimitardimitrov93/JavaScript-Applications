@@ -1,5 +1,7 @@
 import { render } from '../node_modules/lit-html/lit-html.js';
 import authService from './services/authService.js';
+import articleService from './services/articleService.js';
+
 import layout from './views/layout.js';
 import homeTemplate from './views/homeTemplate.js';
 import loginTemplate from './views/loginTemplate.js';
@@ -24,6 +26,9 @@ const routes = [
 
             return template(props);
         },
+        context: {
+            getAll: articleService.getAll,
+        }
     },
 
     {
@@ -57,7 +62,7 @@ const router = (path) => {
     const route = routes.find(x => x.path === path);
     const template = route ? route.template : notFoundTemplate;
     const context = route.context;
-    
+
     const userData = authService.getData();
 
     render(layout(template, { navigationHandler, ...userData, ...context }), document.getElementById('root'));

@@ -10,13 +10,12 @@ const endPoints = {
 export default {
 
     async login(email, password) {
-        const res = request.post(endPoints.login, {
-            body: JSON.stringify({
+        const res = request.post(endPoints.login, JSON.stringify({
                 email,
                 password,
                 returnSecureToken: true, // important
             }),
-        });
+        );
         
         const data = await res;
         console.log(data);
@@ -31,13 +30,12 @@ export default {
     },
 
     async register(email, password) {
-        const res = request.post(endPoints.register, {
-            body: JSON.stringify({
+        const res = request.post(endPoints.register, JSON.stringify({
                 email,
                 password,
                 returnSecureToken: true,
             })
-        })
+        )
 
         const data = await res;
 
@@ -67,6 +65,5 @@ export default {
 
     logOut() {
         localStorage.removeItem('auth');
-        displaySuccessNotification('Successful logout.');
     },
 };

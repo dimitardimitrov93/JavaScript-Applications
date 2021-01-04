@@ -1,6 +1,5 @@
-const request = async (method, url, { body }) => {
+const request = async (method, url, body) => {
     let options = method === 'POST' || method === 'PATCH' ? { method, headers: { 'content-type': 'application/json' }, body } : { method };
-    console.log(options);
 
     const res = await fetch(url, options);
 

@@ -15,7 +15,8 @@ export default {
     async getAll() {
         const res = await request.get(`${databaseUrl}/articles.json`);
         const data = Object.keys(res).map(articleId => ({ articleId: articleId, ...res[articleId] }));
-        return await filterData(data);
+        // return await filterData(data);
+        return data;
     },
 
     async getArticle(articleId) {
