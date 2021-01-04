@@ -1,4 +1,5 @@
 import authService from './services/authService.js';
+import articleService from './services/articleService.js';
 import router from './router.js';
 
 export const onLoginSubmit = (e) => {
@@ -57,4 +58,36 @@ export const logOut = () => {
     localStorage.removeItem('auth');
     console.log('Successfully logged out.');
     router('/login');
+}
+
+export const onCreatedArticleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const title = formData.get('title');
+    const category = formData.get('category');
+    const content = formData.get('content');
+    const creator = JSON.parse(localStorage.getItem('auth')).email;
+
+    if (!title.trim() || !category.trim() || !content.trim()) {
+        // displayErrorNotification('Invalid inputs!');
+        return;
+    }
+
+    articleService.addArticle({
+        title,
+        category,
+        content,
+        creator,
+    })
+        .then(res => {
+            // displaySuccessNotification('Created successfully!');
+            console.log('Created successfully!');
+            
+            router('/');
+        })
+        .catch(error => {
+            console.log(error);
+            
+            // displayErrorNotification(error.message)
+        });
 }

@@ -1,8 +1,8 @@
 import { html } from '../../node_modules/lit-html/lit-html.js';
 
-export default () => html`
+export default ({ onCreatedArticleSubmit }) => html`
     <div class="container">
-        <form>
+        <form @submit=${onCreatedArticleSubmit}>
             <fieldset>
                 <legend>Create article</legend>
                 <p class="field title">

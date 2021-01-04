@@ -6,12 +6,24 @@ import loginTemplate from './views/loginTemplate.js';
 import registerTemplate from './views/registerTemplate.js';
 import createTemplate from './views/createTemplate.js';
 import notFoundTemplate from './views/notFoundTemplate.js';
-import { onLoginSubmit, onRegisterSubmit } from './eventListeners.js';
+import { onLoginSubmit, onRegisterSubmit, onCreatedArticleSubmit } from './eventListeners.js';
 
 const routes = [
     {
         path: '/',
-        template: homeTemplate,
+        template: (props) => {
+            let template = homeTemplate;
+            let url = '/';
+
+            if (!props.isAuthenticated) {
+                template = loginTemplate;
+                url = '/login';
+            }
+
+            history.pushState({}, '', url);
+
+            return template(props);
+        },
     },
 
     {
@@ -33,6 +45,9 @@ const routes = [
     {
         path: '/create',
         template: createTemplate,
+        context: {
+            onCreatedArticleSubmit,
+        }
     },
 ];
 
@@ -42,10 +57,10 @@ const router = (path) => {
     const route = routes.find(x => x.path === path);
     const template = route ? route.template : notFoundTemplate;
     const context = route.context;
-
+    
     const userData = authService.getData();
 
-    render(layout(template(context), { navigationHandler, ...userData }), document.getElementById('root'));
+    render(layout(template, { navigationHandler, ...userData, ...context }), document.getElementById('root'));
 };
 
 function navigationHandler(e) {
