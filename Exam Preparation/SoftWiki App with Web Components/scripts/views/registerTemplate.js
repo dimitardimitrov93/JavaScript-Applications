@@ -1,8 +1,8 @@
 import { html } from '../../node_modules/lit-html/lit-html.js';
 
-export default () => html`
+export default ({ onRegisterSubmit }) => html`
     <div class="container auth">
-        <form>
+        <form @submit=${onRegisterSubmit}>
             <fieldset>
                 <legend>Register</legend>
                 <blockquote>Knowledge is not simply another commodity. On the contrary. Knowledge is never used up. It increases by diffusion and grows by dispersion.</blockquote>

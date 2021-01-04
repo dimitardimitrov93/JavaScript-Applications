@@ -4,7 +4,7 @@ const apiKey = 'AIzaSyAw-1ZG6ROEuBoMmGLTi5QmLykhG2ncMRQ';
 const baseUrl = 'https://softwiki-spa-js-default-rtdb.europe-west1.firebasedatabase.app';
 const endPoints = {
     login: `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
-    
+    register: `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
 }
 
 export default {
@@ -17,8 +17,10 @@ export default {
                 returnSecureToken: true, // important
             }),
         });
-
-        const data = res.json();
+        
+        const data = await res;
+        console.log(data);
+        
         
         if (!data.error) {
             localStorage.setItem('auth', JSON.stringify(data));
@@ -29,7 +31,7 @@ export default {
     },
 
     async register(email, password) {
-        const res = request.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
+        const res = request.post(endPoints.register, {
             body: JSON.stringify({
                 email,
                 password,
@@ -37,7 +39,7 @@ export default {
             })
         })
 
-        const data = await res.json();
+        const data = await res;
 
         if (!data.error) {
             return Promise.resolve(data);

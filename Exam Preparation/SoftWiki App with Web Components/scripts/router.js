@@ -1,11 +1,12 @@
 import { render } from '../node_modules/lit-html/lit-html.js';
+import authService from './services/authService.js';
 import layout from './views/layout.js';
 import homeTemplate from './views/homeTemplate.js';
 import loginTemplate from './views/loginTemplate.js';
 import registerTemplate from './views/registerTemplate.js';
 import createTemplate from './views/createTemplate.js';
 import notFoundTemplate from './views/notFoundTemplate.js';
-import { onLoginSubmit } from './eventListeners.js';
+import { onLoginSubmit, onRegisterSubmit } from './eventListeners.js';
 
 const routes = [
     {
@@ -24,6 +25,9 @@ const routes = [
     {
         path: '/register',
         template: registerTemplate,
+        context: {
+            onRegisterSubmit,
+        }
     },
 
     {
@@ -39,7 +43,9 @@ const router = (path) => {
     const template = route ? route.template : notFoundTemplate;
     const context = route.context;
 
-    render(layout(template(context), { navigationHandler }), document.getElementById('root'));
+    const userData = authService.getData();
+
+    render(layout(template(context), { navigationHandler, ...userData }), document.getElementById('root'));
 };
 
 function navigationHandler(e) {
