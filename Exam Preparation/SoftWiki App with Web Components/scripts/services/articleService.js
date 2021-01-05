@@ -20,7 +20,7 @@ export default {
     },
 
     async getArticle(articleId) {
-        const res = await request(`${databaseUrl}/articles/${articleId}.json?auth=${authService.getData().idToken}`, 'GET');
+        const res = await request.get(`${databaseUrl}/articles/${articleId}.json?auth=${authService.getData().idToken}`);
         return res;
     },
 

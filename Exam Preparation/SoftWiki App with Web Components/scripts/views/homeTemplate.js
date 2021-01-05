@@ -1,7 +1,7 @@
 import { html } from '../../node_modules/lit-html/lit-html.js';
 import articleSection from './articleSection.js';
 
-export default ({ articles }) => html`
+export default ({ articles, navigationHandler }) => html`
     <div class="content">
         <section class="js">
             <h2>JavaScript</h2>
@@ -10,7 +10,7 @@ export default ({ articles }) => html`
                 articles
                     .reduce((jsArticles, currentArticle) => {
                         if (currentArticle.category.toLowerCase() === 'javascript' || currentArticle.category.toLowerCase() === 'js') {
-                            jsArticles.push(articleSection(currentArticle));
+                            jsArticles.push(articleSection(currentArticle, navigationHandler));
                         }
                         return jsArticles;
                     }, [])
@@ -25,7 +25,7 @@ export default ({ articles }) => html`
                 articles
                     .reduce((cSharpArticles, currentArticle) => {
                         if (currentArticle.category === 'c#' || currentArticle.category.toLowerCase() === 'csharp') {
-                            cSharpArticles.push(articleSection(currentArticle));
+                            cSharpArticles.push(articleSection(currentArticle, navigationHandler));
                         }
                         return cSharpArticles;
                     }, [])
@@ -40,7 +40,7 @@ export default ({ articles }) => html`
                 articles
                     .reduce((javaArticles, currentArticle) => {
                         if (currentArticle.category.toLowerCase() === 'java') {
-                            javaArticles.push(articleSection(currentArticle));
+                            javaArticles.push(articleSection(currentArticle, navigationHandler));
                         }
                         return javaArticles;
                     }, [])
@@ -55,7 +55,7 @@ export default ({ articles }) => html`
                 articles
                     .reduce((pythonArticles, currentArticle) => {
                         if (currentArticle.category.toLowerCase() === 'python') {
-                            pythonArticles.push(articleSection(currentArticle));
+                            pythonArticles.push(articleSection(currentArticle, navigationHandler));
                         }
                         return pythonArticles;
                     }, [])
