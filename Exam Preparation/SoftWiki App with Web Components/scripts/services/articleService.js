@@ -8,7 +8,7 @@ export default {
     //?auth=${authService.getData().idToken}
     //".write": "auth !== null",
     async addArticle(articleData) {
-        const res = await request.post(`${databaseUrl}/articles.json?auth=${authService.getData().idToken}`, { body: JSON.stringify(articleData) });
+        const res = await request.post(`${databaseUrl}/articles.json?auth=${authService.getData().idToken}`, JSON.stringify(articleData));
         return res;
     },
 

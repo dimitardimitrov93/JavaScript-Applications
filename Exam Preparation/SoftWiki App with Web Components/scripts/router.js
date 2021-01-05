@@ -26,9 +26,8 @@ const routes = [
 
             return template(props);
         },
-        context: {
-            getAll: articleService.getAll,
-        }
+
+        getData: articleService.getAll,
     },
 
     {
@@ -61,9 +60,16 @@ const router = (path) => {
 
     const route = routes.find(x => x.path === path);
     const template = route ? route.template : notFoundTemplate;
-    const context = route.context;
+    let context = route.context;
 
     const userData = authService.getData();
+
+    if (route.getData) {
+        route.getData()
+            .then(articles => {
+                render(layout(template, { navigationHandler, ...userData, articles }), document.getElementById('root'));
+            });
+    } 
 
     render(layout(template, { navigationHandler, ...userData, ...context }), document.getElementById('root'));
 };
